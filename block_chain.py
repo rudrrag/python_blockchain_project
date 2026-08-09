@@ -9,6 +9,39 @@ class Blockchain(object):
         self.chain = [] # Empty list used to store blockchain
         self.current_transactions = [] # Empty list used to store transactions
 
+    # Understanding Proof of Work
+    # Find a number p that when hashes with the previous block's
+    # solution a has with 4 leading 0s is produced.
+
+    def proof_work(self, last_proof):
+        """
+        Simple Proof Of Work Algorithm:
+        - Find a number p' such that hash (pp') contains 4
+        leading zeros, where p is the previous p'
+        - p is the previous proof, and p' is the new proof
+        :param last_proof: <int>
+        :return: <int>
+        """
+        proof = 0
+        while self.valid_proof(last_proof, proof) is False:
+            proof += 1
+        return proof
+
+    @staticmethod
+    def valid_proof(last_proof, proof):
+        """
+        Validates the Proof: Does hash(last_proof, proof)
+        contain 4 leading zeroes?
+        :param last_proof: <int> Previous proof
+        :param proof: <int> Current proof
+        :return: <bool> True if correct, False if not
+        """
+
+        guess = f'{last_proof}{proof}'.encode()
+        guess_hash = hashlib.sha256(guess).hexdigest()
+        return guess_hash[:4] == "0000"
+
+
     def new_block(self, proof, previous_hash=None):
         # Creates a new Block in the Blockchain
         block = {
@@ -73,16 +106,3 @@ class Blockchain(object):
         block_string = json.dumps(block, sort_keys=True).encode()
         return hashlib.sha256(block_string).hexdigest()
 
-
-# Understanding Proof of Work
-'''
-A Proof of Work (PoW) is how new Blocks are created or mined
-on the blockchain. The goal of PoW is to discover a numbr which
-solves a problem. The numbr must be difficult to find but 
-easy to verify - computationally speaking - by anyone on the
-network. This is the core idea behind PoW.
-'''
-
-# Let's decide the hash of some integer x multiplied by another y
-# must end in 0. So hash(x * y_ = ac23d...0
-# For this example, let's fix x = 5:
