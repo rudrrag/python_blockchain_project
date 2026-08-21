@@ -1,7 +1,12 @@
 # importing libraries
 import hashlib
 import json
+from textwrap import dedent
 from time import time
+from uuid import uuid4 # uniquely identifies info/resources
+# in computer systems
+
+from flask import Flask, jsonify
 
 
 class Blockchain(object):
@@ -23,7 +28,7 @@ class Blockchain(object):
         :return: <int>
         """
         proof = 0
-        while self.valid_proof(last_proof, proof) is False:
+        while not self.valid_proof(last_proof, proof):
             proof += 1
         return proof
 
@@ -105,4 +110,42 @@ class Blockchain(object):
         # or we'll have inconsisent hashes
         block_string = json.dumps(block, sort_keys=True).encode()
         return hashlib.sha256(block_string).hexdigest()
+
+# Flask framework
+app = Flask(__name__)
+# Generate a globally unique address for this node
+node_identifier = str(uuid4()).replace('-', '')
+
+# Instantiate the Blockchain
+blockchain = Blockchain()
+
+# Creating the mine endpoint which is a GET request
+@app.route('/mine', methods=['GET'])
+def mine():
+    return "We'll mine a new Block"
+
+# Creating the transaction endpoint which is a POST request,
+# since we'll be sending data to it.
+@app.route('/transactons/new', methods=['POST'])
+def new_transaction():
+    return "We'll add a new transaction"
+
+# Creating the chain endpoint,
+# which returns the full Blockchain
+@app.route('/chain', methods=['GET'])
+def full_chain():
+    response = {
+        'chain': blockchain.chain,
+        'length': len(blockchain.chain)
+    }
+    return jsonify(response), 200
+
+# Runs the server on port 5000
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+
+
+
+
+
 
