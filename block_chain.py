@@ -14,6 +14,10 @@ class Blockchain(object):
         self.chain = [] # Empty list used to store blockchain
         self.current_transactions = [] # Empty list used to store transactions
 
+        # Creates the genesis block. Without this, last_block fails
+        # because self.chain[-1] has nothing to point to.
+        self.new_block(previous_hash='1', proof=100)
+
     # Understanding Proof of Work
     # Find a number p that when hashes with the previous block's
     # solution a has with 4 leading 0s is produced.
@@ -118,6 +122,10 @@ node_identifier = str(uuid4()).replace('-', '')
 
 # Instantiate the Blockchain
 blockchain = Blockchain()
+
+@app.route('/')
+def index():
+    return '<h1>Welcome to the Blockchain</h1>'
 
 # Creating the mine endpoint which is a GET request
 @app.route('/mine', methods=['GET'])
