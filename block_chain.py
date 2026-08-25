@@ -1,7 +1,6 @@
 # importing libraries
 import hashlib
 import json
-from textwrap import dedent
 from time import time
 from uuid import uuid4 # uniquely identifies info/resources
 # in computer systems
@@ -170,7 +169,7 @@ class Blockchain(object):
         # Grab and verify the chains from all the nodes
         # our network
         for node in neighbours:
-            response = requests.get(f'http://{node}/chain')
+            response = requests.get(f'https://{node}/chain')
 
             if response.status_code == 200:
                 length = response.json()['length']
@@ -182,13 +181,13 @@ class Blockchain(object):
                     max_length = length
                     new_chain = chain
 
-            # Replace our chain if we discovered a new, valid chain
-            # longer than ours
-            if new_chain:
-                self.chain = new_chain
-                return True
+        # Replace our chain if we discovered a new, valid chain
+        # longer than ours
+        if new_chain:
+            self.chain = new_chain
+            return True
 
-            return False
+        return False
 
 # Flask framework
 app = Flask(__name__)
@@ -298,7 +297,7 @@ def full_chain():
 
 # Runs the server on port 5000
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=port)
 
 
 
