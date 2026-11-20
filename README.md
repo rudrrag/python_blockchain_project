@@ -1,5 +1,5 @@
 Blockchain in Python
-[insert date] | Rudrra
+[August 2-26] | Rudrra Gohil
 A beginner-friendly Python project that simulates how a blockchain works - built for portfolio and learning purposes.
 
 About the Project
